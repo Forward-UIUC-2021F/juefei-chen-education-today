@@ -32,7 +32,7 @@ def view_keywords():
 
 
 key_words = ['professor', 'associate', 'assistant', 'lecturer', 'assoc', 'adjunct', 'faculty', 'instructor', 'director', 'asst',
-             'emeritus', 'prof']
+             'emeritus', 'prof ']
 
 def check_position(s):
     s = s.lower()

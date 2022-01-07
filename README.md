@@ -26,6 +26,13 @@ Please clone this repo and run it on one of the Owl servers.
 
 ## Usage
 
+### Run Backend for the UI
+
+```bash
+# please run this command on Owl2
+flask run --host=0.0.0.0 --port=3113
+```
+
 Please refer to the end of each python file referred below for examples of calling functions.
 
 ### Scrape Department Data
@@ -49,7 +56,7 @@ cd faculty/LinkedIn
 python3 get_linkedin_data.py
 ```
 
-### Scrape Faculty Data
+### Scrape Orcide Data
 
 ```bash
 cd faculty/Orcid

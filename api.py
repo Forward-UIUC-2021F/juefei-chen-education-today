@@ -1,3 +1,5 @@
+# flask run --host=0.0.0.0 --port=3113
+
 from flask import Flask, request
 import os
 import mysql.connector
@@ -9,7 +11,7 @@ checked = {}
 
 def connect_to_mysql():
     mydb = mysql.connector.connect(
-        host="localhost",
+        host="owl2.cs.illinois.edu",
         user="juefeic2",
         password="0202141208",
         database="juefeic2_educationtoday"

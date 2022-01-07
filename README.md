@@ -30,6 +30,7 @@ Please clone this repo and run it on one of the Owl servers.
 
 ```bash
 # please run this command on Owl2
+# To run the frontend, please refer to https://github.com/Forward-UIUC-2021F/juefei-chen-faculty-info-frontend
 flask run --host=0.0.0.0 --port=3113
 ```
 

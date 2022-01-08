@@ -26,17 +26,6 @@ for i in f.readlines():
         research_keywords.add(j)
         d[j] += 1
 
-def connect_to_mysql():
-    mydb = mysql.connector.connect(
-        host="owl2.cs.illinois.edu",
-        user="juefeic2",
-        password="0202141208",
-        database="juefeic2_educationtoday"
-    )
-    mycursor = mydb.cursor()
-    return mydb, mycursor
-
-
 def check_research(s):
     s = s.lower().strip().replace(',', '')
     if s in research_areas:
@@ -53,12 +42,3 @@ def check_research(s):
     if len(s) > 50:
         return n >= 8
     return n >= 2 or n == len(s) == 1
-
-
-# mydb, mycursor = connect_to_mysql()
-# mycursor.execute("SELECT Research FROM Faculty where Task_ID like '48%'")
-# r = mycursor.fetchall()
-# for i in range(9434):
-#     if r[i][0]:
-#         print(i, check_research(r[i][0]), r[i][0].strip())
-#         print()

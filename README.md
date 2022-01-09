@@ -73,7 +73,7 @@ Scraping department information shares the same workflow as scraping faculty inf
 The goal is: for any given (university, department) pair, be able to scrape the information (name, position, email, phone, and research interest) of all faculty members in the department.
 To reach this goal, we made an assumption that faculty information is stored as a list (also called a cluster) in the HTML of the faculty-listing pages, see below.
 
-![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/blob/main/readme_img/1.png)
+![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/tree/main/readme_img/1.png)
 
 Work flow of the scraping process:
 ```
@@ -94,6 +94,8 @@ There are two important functions, extract_faculty_data and is_valid in the pseu
 ##### 2.1 Construct DOM tree for the HTML
 
 This step is straightforward, see the example below
+
+![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/tree/main/readme_img/2.png)
 
 During implementation, class names in html tags are also included, e.g. `<div class="name">`. If there exist multiple tags with the same name, add index to make each tag path unique. For the example above, as there are two `<p>` tags, the second one is renamed to `<p1>`. Therefore, the tag path leading to faculty position would be `<li><div><p>` while the tag path for research interest is `<li><div><p1>`
 
@@ -128,6 +130,8 @@ Compare the string to the research interests collected from Google Scholar’s P
 
 Create a dictionary for each text element. Keys are tag path, and values are the corresponding categories. See an example below:
 
+![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/tree/main/readme_img/3.png)
+
 In the example above, the tag path to the cluster should be: `<body><div><div><main><div><div><div><ul>`.
 The reason is that this tag path appears in the first 8 records, and after the `<ul>` tag, tag names diverged into `<li2>, <li2>,<li3>...` Meanwhile, since the last tag path is highly different from the others, its corresponding text element should have been mistakenly annotated as research interest.
 
@@ -150,6 +154,7 @@ while True:
 
 First extract the cluster from the full DOM tree, see an example below:
 
+![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/tree/main/readme_img/4.png)
 
 With an algorithm similar to the pseudo-code in section 2.3, we are able to find the tag path to each category of target data in the cluster.
 Note that even if there are variations in the structure of information listed for some faculty members, e.g. some faculty may have their email address listed, while others may not, we are still able to identify tag paths correctly with class names in tags.

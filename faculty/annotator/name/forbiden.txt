@@ -71,6 +71,10 @@ serve
 centre
 reporting
 pride
+art
+arts
+esl
+login
 law
 are
 as

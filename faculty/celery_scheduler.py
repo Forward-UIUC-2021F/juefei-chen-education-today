@@ -16,7 +16,7 @@ def connect_to_mysql():
 
 mydb, mycursor = connect_to_mysql()
 while True:
-    n = os.popen('../../Celery_Test/redis/redis-stable/src/redis-cli -h localhost -p 6379 -n 0 llen celery').read()
+    n = os.popen('../Celery/redis/redis-stable/src/redis-cli -h localhost -p 6379 -n 0 llen celery').read()
     if int(n) >= 2:
         time.sleep(1)
         continue

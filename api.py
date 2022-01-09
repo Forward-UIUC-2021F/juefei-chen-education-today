@@ -106,9 +106,9 @@ def submit_query():
     if len(data['department']) > 0 and data['department'] != 'All':
         university_id = int(data['university'].split('. ')[0])
         department = data['department']
-        sql = 'SELECT Task_ID, URL, Execution_Time from Faculty_History where University_ID = "{}" and Department_Name = "{}";'.format(university_id, department)
+        sql = 'SELECT Task_ID, URL, Execution_Time from Faculty_History where University_ID = "{}" and Department_Name = "{}" and Status = "Success";'.format(university_id, department)
         mycursor.execute(sql)
-        t = mycursor.fetchone()
+        t = mycursor.fetchall()[0]
         task_id = t[0]
         url = t[1]
         execution_time = t[2]

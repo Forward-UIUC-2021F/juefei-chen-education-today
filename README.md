@@ -73,7 +73,7 @@ Scraping department information shares the same workflow as scraping faculty inf
 The goal is: for any given (university, department) pair, be able to scrape the information (name, position, email, phone, and research interest) of all faculty members in the department.
 To reach this goal, we made an assumption that faculty information is stored as a list (also called a cluster) in the HTML of the faculty-listing pages, see below.
 
-![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/tree/main/readme_img/1.png)
+![test](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/blob/main/readme_img/1.png)
 
 Work flow of the scraping process:
 ```

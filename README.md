@@ -274,6 +274,8 @@ Please refer to this [code](https://github.com/Forward-UIUC-2021F/juefei-chen-ed
 
 **1 Start redis**
 
+Please start redis on Owl2
+
 if you haven't done this before, run the following command first
 ```
 cd Celery/redis

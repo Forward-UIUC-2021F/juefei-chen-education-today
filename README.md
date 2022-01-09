@@ -65,6 +65,10 @@ cd faculty/Orcid
 python3 get_orcid_data.py
 ```
 
+##### Start Distributed Crawler
+
+See the last section
+
 ## Algorithmic Design for Scraping Faculty Information
 Scraping department information shares the same workflow as scraping faculty information.
 
@@ -256,3 +260,49 @@ Note that as our current annotator for research interest does not perform very w
 
 The performance of this system highly depends on the accuracy of the annotator. If the annotator makes too many errors, then there is no way to extract faculty info. 
 If this system did not perform well, please uncomment [this line](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/blob/406d8928cd68e1c6e891646bdd9a3eb9f2f5bb51/faculty/get_data_from_multiple_lists.py#L220-L221), and run again. This time, you can see the text elements and their annotated categories. If you see some noise are annotated as “Name”, add each word in the noise into [this file](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/blob/406d8928cd68e1c6e891646bdd9a3eb9f2f5bb51/faculty/annotator/name/forbiden.txt).
+
+
+## Distributed Crawler
+
+The distributed crawler is built with [Celery](https://medium.com/analytics-vidhya/python-celery-distributed-task-queue-demystified-for-beginners-to-professionals-part-1-b27030912fea).
+
+Using Celery on Owl servers with Redis does not require any sudo commands (it’s useful since we do not have access to sudo).
+
+Please refer to this [code](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/blob/406d8928cd68e1c6e891646bdd9a3eb9f2f5bb51/faculty/celery_scheduler.py) and this [code](https://github.com/Forward-UIUC-2021F/juefei-chen-education-today/blob/406d8928cd68e1c6e891646bdd9a3eb9f2f5bb51/faculty/tasks.py).
+
+##### Setup
+
+**1 Start redis**
+
+if you haven't done this before, run the following command first
+```
+cd Celery/redis
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+make
+```
+
+Start redis by:
+```
+src/redis-server --protected-mode no
+```
+
+**2 Start workers**
+
+Open more terminals, each ssh onto a different owl server
+
+On each server, run
+
+```
+cd faculty
+celery -A tasks worker --pool=prefork --concurrency=1 --loglevel=info
+```
+
+**3 Start scheduler**
+
+Open another terminal and ssh onto Owl2, run
+
+```
+cd faculty
+python3 celery_scheduler.py
+```

@@ -34,17 +34,45 @@ flask run --host=0.0.0.0 --port=3113
 Please refer to the end of each python file referred below for examples of calling functions.
 
  ##### Scrape Department Data
+ 
+Given a university name, this function can return the names of all departments (or majors) in this university.
 
 ```bash
 cd department
 python3 algorithm.py
 ```
 
+The output is a list of department names.
+
 ##### Scrape Faculty Data
+
+Given a university name and a department name, this function can return the basic info of all faculty members in this department.
 
 ```bash
 cd faculty
 python3 algorithm.py
+```
+
+The output is a list of faculty info
+
+```bash
+[
+	{
+		'Name': ...,
+		'Position': ...,
+		'Research Interest': ...,
+		'Email': ...,
+		'Phone': ...
+	},
+	{
+		'Name': ...,
+		'Position': ...,
+		'Research Interest': ...,
+		'Email': ...,
+		'Phone': ...
+	},
+	...
+]
 ```
 
 ##### Scrape LinkedIn Data
@@ -58,6 +86,57 @@ cd faculty/LinkedIn
 python3 get_linkedin_data.py
 ```
 
+Input
+```bash
+name_list: a list of faculty members
+university: university of the faculty members
+linkedin_email: email address used to log in a linkedin account
+linkedin_password: password used to log in a linkedin account
+```
+
+Output
+```bash
+{
+	faculty1: {
+		'education': [
+			education1, *
+			education2, *
+			...
+		],
+		'experience': [
+			experience1, *
+			experience2, *
+			...
+		]
+	},
+	faculty2: {
+		'education': [...],
+		'experience': [...]
+	},
+	...
+}
+```
+
+`*` a list of info describing an education or experience. If a piece of info has a specific tag (these tags are hidden on webpages) on LinkedIn, the element in the list would be a tuple, otherwise, it would be a string. For example:
+
+```bash
+[
+	"Cornell University",
+	[
+		"Degree Name",
+		"PhD"
+	],
+	[
+		"Field Of Study",
+		"Computer Science"
+	],
+	[
+		"Dates attended or expected graduation",
+		"1998 - 2003"
+	]
+]
+```
+
 ##### Scrape Orcide Data
 
 ```bash
@@ -65,9 +144,33 @@ cd faculty/Orcid
 python3 get_orcid_data.py
 ```
 
+Return a list of education/experience/publication info of a faculty member. Each element in this list has a similar structure to `*` above.
+
 ##### Start Distributed Crawler
 
 See the last section
+
+##### Important functions
+```bash
+juefei-chen-education-today/
+├── api.py									# the backend for the UI
+├── data									  # faculty info already collected
+├── department
+│   ├── algorithm.py
+│   ├── find_possible_list_department.py     # main functions here
+├── faculty
+│   ├── algorithm.py
+│   ├── annotator			# annotate text elements on a webpage
+│   ├── get_data_from_multiple_lists.py       # main functions here
+│   ├── get_data_from_multiple_lists_with_old_classifier.py   *
+│   ├── LinkedIn
+│   │   ├── get_background.py
+│   │   ├── get_linkedin_data.py
+│   ├── Orcid
+            └── get_orcid_data.py
+
+* Very similar to get_data_from_multiple_lists.py except it is using a classifier instead of an annotator to annotate text elements
+```
 
 ## Algorithmic Design for Scraping Faculty Information
 Scraping department information shares the same workflow as scraping faculty information.
@@ -308,3 +411,7 @@ Open another terminal and ssh onto Owl2, run
 cd faculty
 python3 celery_scheduler.py
 ```
+
+## Future Plan
+1. Build a more robust annotator for scraping faculty info
+2. Find a more efficient and robust method to scrape LinkedIn data

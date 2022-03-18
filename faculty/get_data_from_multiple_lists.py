@@ -661,7 +661,13 @@ def view_html_structure(url, scrape_option, known_html=[], wrong_words=[]):
             # handle the case when each cell of faculty info is not the direct decendent of the root
             a_num, a = find_info_in_grandchildren(subtree_dict, subtree_path, raw_html)
             # print(a_num, a, total_match)
-            if a_num > total_match:
+            
+            non_empty_name_num, total_name_num = 0, len(a)
+            for i in a:
+                if 'Name' in a and a['Name'] != '':
+                    non_empty_name_num += 1
+
+            if a_num > total_match and non_empty_name_num / total_name_num > 0.6:
                 for r in a:
                     if 'Name' in r.keys() and r['Name'] != 'Missing':
                         tmp_name = r['Name']

@@ -1,4 +1,4 @@
-## This module will be used to extract the faculty information for a specific university and department
+## This module will be used to extract the faculty information for a specific department
 
 ## Description of the submodule:
 This module is designed to achieve the following tasks:

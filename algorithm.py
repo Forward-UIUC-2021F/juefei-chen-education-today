@@ -60,8 +60,11 @@ def save_and_cleanup(department, university, res_data):
         fp.write(json.dumps(res_data, indent=4))
 
     # removing intermediate txt files
-    os.remove('./html_structure.txt')
-    os.remove('./raw_html.txt')
+    if(os.path.exists('./html_structure.txt')):
+        os.remove('./html_structure.txt')
+    
+    if(os.path.exists('./raw_html.txt')):
+        os.remove('./raw_html.txt')
 
 
 def parse_args():
@@ -73,6 +76,7 @@ def parse_args():
                         help='The raw html of the USAToday page for instituions.')
     parser.add_argument('--department', type=str,
                         help='Department name within the university.')
+    parser.add_argument('--urlmap_path', type=str, help='Path to a json file containing the university name (similar to what was scraped) and url to be used to get the fauclty information.')
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -80,13 +84,11 @@ if __name__ == "__main__":
     url = args.url
     raw_html = args.raw_html
     department = args.department
+    urlmap_path = args.urlmap_path
     universities = []
     
-    # provide scraping URLs for universities in below map
-    urlMap = {
-        'Columbia University': 'https://www.math.columbia.edu/people/directory/',
-        'California Institute of Technology': 'https://pma.caltech.edu/people?cat_one=all&cat_two=Mathematics'
-    }
+    # NOTE: these urls are for specific departments
+    urlMap = json.load(open(urlmap_path, 'r'))
 
     if((url == None and raw_html != None) or (url != None and raw_html == None)):
         scraper = InstitutionScraper()
@@ -96,10 +98,14 @@ if __name__ == "__main__":
             for line in fp:
                 universities.append(line.strip().split(',')[1].strip('\''))
     
-
+    university_url_map = {}
     for university in set(universities):
         print('Fecthing information for department = {} of university = {}'.format(department, university))
 
         data, url = find(university, department, urlMap)
-        print('University = {}, url = {}'.format(university, url))
+        university_url_map[university.lower()] = url
+
+        with open('./results/{}_univs_url_map.csv'.format(department), 'w+') as fp:
+            for key, value in university_url_map.items():
+                fp.write('{},{}\n'.format(key, value))
         save_and_cleanup(department, university, data)

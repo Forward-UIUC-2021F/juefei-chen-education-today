@@ -86,9 +86,11 @@ if __name__ == "__main__":
     department = args.department
     urlmap_path = args.urlmap_path
     universities = []
-    
+
     # NOTE: these urls are for specific departments
-    urlMap = json.load(open(urlmap_path, 'r'))
+    urlMap = {}
+    if(os.path.exists(urlmap_path)):
+        urlMap = json.load(open(urlmap_path, 'r'))
 
     if((url == None and raw_html != None) or (url != None and raw_html == None)):
         scraper = InstitutionScraper()

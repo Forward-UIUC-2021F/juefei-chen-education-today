@@ -11,6 +11,14 @@ import argparse
 
 forbidden = ['google', 'wiki', 'news', 'instagram', 'twitter', 'linkedin', 'criminal', 'course', 'facebook']
 
+# Loading normalized names fetched from MAG dataset
+normalized_names = set()
+with open('./normalized_name_set.txt', 'r') as fp:
+    normalized_names.update([s.strip() for s in fp.readlines()])
+print("Loading normalized names complete!")
+
+NAME_PENALTY_RATIO = 0.2
+GOOGLE_URL_PRIORITY_SCALE = 1.3
 
 def find(university, department, urlMap={}):
     possibleURLs = []
@@ -41,7 +49,9 @@ def find(university, department, urlMap={}):
 
     res_data = {}
     res_url = ''
+    best_results, best_url, best_score = [], '', 0
 
+    google_url_position = 1
     for url in possibleURLs:
         for option in ['urllib', 'urllibs']:
             try:
@@ -49,11 +59,31 @@ def find(university, department, urlMap={}):
             except Exception as e:
                 continue
 
-            if len(r) > 1:
-                return r, url
+            document_score = document_ranking_metric(r, google_url_position)
+            if(document_score > best_score):
+                best_results, best_url, best_score = r, url, document_score
+        google_url_position += 1
 
-    return res_data, res_url
+    return (best_results, best_url) if(len(best_results) > 1) else (res_data, res_url)
 
+def document_ranking_metric(faculty_data, google_url_position):
+    valid_name_count = 0
+    name_penalty = 0
+
+    for i in range(len(faculty_data)):
+        faculty_info = faculty_data[i]
+        
+        if('Name' in faculty_info and faculty_info['Name'] != None):
+            # check if parts of name are present in normalized_name_set.txt
+            split_names = set(re.split('\W+', faculty_info['Name'].lower()))
+            if(len(split_names.intersection(normalized_names)) > 0):
+                valid_name_count += 1
+            else: 
+                name_penalty += 1
+        else:
+            name_penalty += 1
+
+    return valid_name_count - name_penalty * NAME_PENALTY_RATIO - google_url_position * GOOGLE_URL_PRIORITY_SCALE
 
 def save_and_cleanup(department, university, res_data):
     with open('./results/{}-{}-faculty-info.json'.format(university, department), 'w+') as fp:
@@ -77,6 +107,10 @@ def parse_args():
     parser.add_argument('--department', type=str,
                         help='Department name within the university.')
     parser.add_argument('--urlmap_path', type=str, help='Path to a json file containing the university name (similar to what was scraped) and url to be used to get the fauclty information.')
+    parser.add_argument('--name_penalty', type=float,
+                        help='The fraction used to scale the incorrectly classified names in documents.')
+    parser.add_argument('--google_priority', type=float,
+                        help='The higher the value of google_priority, the more preference would be given to earlier results in google search.')
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -84,7 +118,9 @@ if __name__ == "__main__":
     url = args.url
     raw_html = args.raw_html
     department = args.department
-    urlmap_path = args.urlmap_path
+    urlmap_path = args.urlmap_path if(args.urlmap_path) else ''
+    NAME_PENALTY_RATIO = args.name_penalty if(args.name_penalty) else 0.2
+    GOOGLE_URL_PRIORITY_SCALE = args.google_priority if(args.google_priority) else 1.3
     universities = []
 
     # NOTE: these urls are for specific departments

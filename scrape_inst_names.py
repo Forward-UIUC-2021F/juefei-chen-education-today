@@ -4,6 +4,9 @@ import os
 
 class InstitutionScraper:
     def fetch_and_save_webpage(self, url):
+        '''
+        Fetch the webpage HTML and saves it to a file.
+        '''
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"}
         webpage = requests.get(url, headers = headers)
 
@@ -12,6 +15,9 @@ class InstitutionScraper:
 
 
     def parse_and_save_raw_inst_html(self, subject, filepath):
+        '''
+        Parse the raw html (of USNews instituition ranking page format) and save the scraped institution names to a file.
+        '''
         # create a folder named results if it doesn't exist
         if not os.path.exists('./results'):
             os.makedirs('./results')
@@ -44,6 +50,9 @@ class InstitutionScraper:
         os.remove(filepath) 
 
     def scrape(self, url, raw_html_path, department):
+        '''
+        This function takes in the url or raw_html_path and scrapes the institution names and saves them to a file.
+        '''
         if(url != None):
             self.fetch_and_save_webpage(url)   
             raw_html_path = "./top_uni.html"     

@@ -1,0 +1,4 @@
+results/*
+normalized_name_set.txt
+__pycache__/*
+.DS_Store

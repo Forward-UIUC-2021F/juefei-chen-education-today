@@ -66,6 +66,7 @@ def find(university, department, urlMap={}):
 
     return (best_results, best_url) if(len(best_results) > 1) else (res_data, res_url)
 
+# This function returns a score for every document scraped from google search results
 def document_ranking_metric(faculty_data, google_url_position):
     valid_name_count = 0
     name_penalty = 0
@@ -119,11 +120,17 @@ if __name__ == "__main__":
     raw_html = args.raw_html
     department = args.department
     urlmap_path = args.urlmap_path if(args.urlmap_path) else ''
+
+    # This constant ratio will be used to penalize any scraped names which are not present in the normalized_names list
+    # The higher the value, the more penalty will be given to incorrectly classified names
     NAME_PENALTY_RATIO = args.name_penalty if(args.name_penalty) else 0.2
+
+    # This constant will penalize lower ranked google search results. The higher the value, the more preference will be given to earlier results.
     GOOGLE_URL_PRIORITY_SCALE = args.google_priority if(args.google_priority) else 1.3
     universities = []
 
-    # NOTE: these urls are for specific departments
+    # These are the list of urls which are specificall mapped to certain universities.
+    # NOTE: This map is specific to a department like mathematics.
     urlMap = {}
     if(os.path.exists(urlmap_path)):
         urlMap = json.load(open(urlmap_path, 'r'))
